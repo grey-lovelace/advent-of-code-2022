@@ -1,7 +1,8 @@
-# AOC Kotlin Template
+# AOC Kotlin 2022
 
-A template for doing Advent of Code in Kotlin!
+2022 Advent of code using the [Kotlin AOC Template](https://github.com/grey-lovelace/advent-of-code-template-kotlin)
 
+# From Template
 Using Kotlin scripts (.kts) files are a little less verbose, but it makes it much harder to integrate with IDE intellisense. This setup makes that work.
 
 To run a day, simply run: `./gradlew run --args="{spaceDelimittedDayNumbers}"`
