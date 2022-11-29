@@ -17,7 +17,7 @@ interface Day {
 
         expectedPart2Results.forEachIndexed{ i, it ->
             val sampleFileSuffux = if (i==0) "" else i;
-            check(it == this.part1(File("${path}/sample${sampleFileSuffux}.txt")))
+            check(it == this.part2(File("${path}/sample${sampleFileSuffux}.txt")))
         }
         val part2Result = this.part2(File("${path}/input.txt"))
         println("Part2 = ${part2Result}")
