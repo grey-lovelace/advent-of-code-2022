@@ -10,11 +10,16 @@ Example: `./gradlew run --args="5 6"` would run the Day5 and Day6 classes.
 
 To run all days in order, simply run: `./gradlew run --args="ALL"`
 
-## On calling `run`
+## On testing with sample inputs
 
-When calling the `run` method, you will pass in 2 lists of expected test values. For each list, it will run the first expected result against the corrosponding `sample.txt` contents. Any additional test values after the first try to find file `sample{expectedValueIndex}.txt` and use that as the input instead.
+Each Day class has optional lists of expeced results you may set for part1 and part2. For each list, it will run the first expected result against the corrosponding `sample.txt` contents. Any additional test values after the first try to find file `sample{expectedValueIndex}.txt` and use that as the input instead.
 
-Example: Passing in `run(listOf(123, 456), listOf(789))` will:
+Example: Setting 
+```
+    override val expectedPart1Results = listOf(123, 456)
+    override val expectedPart2Results = listOf(789)
+```
+will:
 - verify 123 is the output of `part1` with file `sample.txt`
 - verify 456 is the output of `part1` with file `sample1.txt`
 - run `part1` with file `input.txt` and output the value to console

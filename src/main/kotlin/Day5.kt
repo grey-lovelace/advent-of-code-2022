@@ -2,10 +2,8 @@ import java.io.File
 
 class Day5: Day {
     override val resourcePath = "day05"
-
-    override fun run() {
-        this.run(listOf(0L), listOf(0L));
-    }
+    override val expectedPart1Results = listOf(0L)
+    override val expectedPart2Results = listOf(0L)
 
     override fun part1(file: File): Long {
         return 0;

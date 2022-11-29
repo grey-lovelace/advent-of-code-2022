@@ -1,11 +1,11 @@
 import java.io.File
 
 interface Day {
-    val resourcePath: String;
+    val resourcePath: String
+    val expectedPart1Results: List<Any>
+    val expectedPart2Results: List<Any>
 
-    fun run()
-
-    fun run(expectedPart1Results: List<Any>, expectedPart2Results: List<Any>) {
+    fun run() {
         val path = "src/main/resources/${resourcePath}"
 
         expectedPart1Results.forEachIndexed{ i, it ->
