@@ -6,20 +6,16 @@ class Day1: Day {
     override val expectedPart2Results = listOf(45000L)
 
     override fun part1(file: File): Long {
-        return getCaloriesPerElf(file).maxOrNull() as Long;
+        return getCaloriesPerElf(file).maxOrNull()!!;
     }
 
     override fun part2(file: File): Long {
         return getCaloriesPerElf(file).sortedDescending().take(3).sum()
     }
 
-    fun getCaloriesPerElf(file: File): MutableList<Long> {
-        return file.readLines().fold(mutableListOf(0L)) { acc, line -> 
-            when {
-                line.isNotBlank() -> acc[acc.lastIndex] += line.toLong()
-                else -> acc += 0
-            }
-            acc
+    fun getCaloriesPerElf(file: File): List<Long> {
+        return file.readText().split(Regex("(?:\r?\n){2}")).map{
+            it.split(Regex("\r?\n")).map{ line -> line.toLong() }.sum()
         }
     }
 }
