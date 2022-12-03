@@ -10,7 +10,8 @@ fun main(args: Array<String>) {
 }
 
 fun runDay(dayString: String) {
-    println("Running Day${dayString}...")
-    val day: Day = Class.forName("Day${dayString}").kotlin.createInstance() as Day
+    val dayClassString = "Day${dayString.padStart(2, '0')}";
+    println("Running ${dayClassString}...")
+    val day: Day = Class.forName(dayClassString).kotlin.createInstance() as Day
     day.run()
 }

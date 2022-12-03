@@ -7,7 +7,7 @@ Using Kotlin scripts (.kts) files are a little less verbose, but it makes it muc
 
 To run a day, simply run: `./gradlew run --args="{spaceDelimittedDayNumbers}"`
 
-Example: `./gradlew run --args="5 6"` would run the Day5 and Day6 classes.
+Example: `./gradlew run --args="5 6"` would run the Day05 and Day06 classes.
 
 To run all days in order, simply run: `./gradlew run --args="ALL"`
 

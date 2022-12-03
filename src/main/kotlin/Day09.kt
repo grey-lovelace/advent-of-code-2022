@@ -1,7 +1,7 @@
 import java.io.File
 
-class Day7: Day {
-    override val resourcePath = "day07"
+class Day09: Day {
+    override val resourcePath = "day09"
     override val expectedPart1Results = listOf(0L)
     override val expectedPart2Results = listOf(0L)
 
