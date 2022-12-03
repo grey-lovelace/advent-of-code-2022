@@ -8,7 +8,7 @@ class Day03: Day {
     override fun part1(file: File): Int {
         return file.readLines()
             .map{ Pair(it.take(it.length/2), it.takeLast(it.length/2)) }
-            .map{ it.first.find(it.second::contains) }
+            .map{ (half1, half2) -> half1.find(half2::contains) }
             .map( letters::indexOf )
             .sum()
     }
