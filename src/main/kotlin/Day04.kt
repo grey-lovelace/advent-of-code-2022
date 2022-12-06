@@ -19,7 +19,7 @@ class Day04: Day {
 
     fun File.findRanges(): List<Pair<IntRange,IntRange>> {
         return this.readLines()
-            .map{ Regex("\\d+").findAll(it).map{ f -> f.value.toInt() }.toList() }
+            .map{ it.findNumbers() }
             .map{ Pair((it[0]..it[1]),(it[2]..it[3])) }
     }
 }

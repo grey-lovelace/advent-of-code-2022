@@ -1,5 +1,4 @@
 import java.io.File
-import transpose
 
 class Day05: Day {
     override val resourcePath = "day05"
@@ -14,13 +13,15 @@ class Day05: Day {
         return moveCrates(file, true)
     }
 
-    fun moveCrates(file: File, is9001: Boolean): String {
-        val (stacksString, movesString) = file.readText().split(Regex("(\r?\n){2}"))
+    fun moveCrates(file: File, movesMultipleAtOnce: Boolean): String {
+        val (stacksString, moves) = file.readText().split(Regex("(\r?\n){2}"))
         val stacks = prepStacks(stacksString)
-        prepMoves(movesString).forEach{ (amount, from, to) ->
-            var removed = (1..amount).map{ stacks[from-1].removeLast() }
-            stacks[to-1].addAll(if(is9001) removed.reversed() else removed)
-        }
+        moves.lines()
+            .map{ it.findNumbers() }
+            .forEach{ (amount, from, to) ->
+                var removed = (1..amount).map{ stacks[from-1].removeLast() }
+                stacks[to-1].addAll(if(movesMultipleAtOnce) removed.reversed() else removed)
+            }
         return stacks.map{ it.last() }.joinToString("")
     }
 
@@ -29,12 +30,8 @@ class Day05: Day {
             .reversed()
             .drop(1)
             .map{it.toList()} // Needed to make it find the transpose function
-            .transpose()
+            .transposed()
             .map{ it.filter{ l -> l.isLetter()}.toMutableList() }
             .filter{ it.isNotEmpty() }
-    }
-
-    fun prepMoves(moves: String): List<List<Int>> {
-        return moves.lines().map{ Regex("\\d+").findAll(it).map{ f -> f.value.toInt() }.toList() }
     }
 }
