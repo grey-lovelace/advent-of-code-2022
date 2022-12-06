@@ -16,6 +16,6 @@ class Day01: Day {
     fun getCaloriesPerElf(file: File): List<Int> {
         return file.readText()
             .split(Regex("(?:\r?\n){2}"))
-            .map{ it.split(Regex("\r?\n")).map(String::toInt).sum() }
+            .map{ it.lines().map(String::toInt).sum() }
     }
 }
