@@ -14,15 +14,19 @@ class Day05: Day {
     }
 
     fun moveCrates(file: File, movesMultipleAtOnce: Boolean): String {
-        val (stacksString, moves) = file.readText().split(Regex("(\r?\n){2}"))
-        val stacks = prepStacks(stacksString)
-        moves.lines()
-            .map{ it.findNumbers() }
-            .forEach{ (amount, from, to) ->
-                var removed = (1..amount).map{ stacks[from-1].removeLast() }
-                stacks[to-1].addAll(if(movesMultipleAtOnce) removed.reversed() else removed)
+        return file.readText()
+            .split(Regex("(\r?\n){2}"))
+            .let{ Pair(prepStacks(it[0]), it[1].lines().map{ l -> l.findNumbers() }) }
+            .also{ (stacks, moves) ->
+                moves.forEach{ (amount, from, to) ->
+                    (1..amount).map{ stacks[from-1].removeLast() }
+                        .let{ if(movesMultipleAtOnce) it.reversed() else it }
+                        .also{ stacks[to-1].addAll(it) }
+                }
             }
-        return stacks.map{ it.last() }.joinToString("")
+            .first
+            .map{ it.last() }
+            .joinToString("")
     }
 
     fun prepStacks(stacks: String): List<MutableList<Char>> {
