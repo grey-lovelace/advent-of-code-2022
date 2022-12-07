@@ -6,16 +6,15 @@ class Day06: Day {
     override val expectedPart2Results = listOf(19)
 
     override fun part1(file: File): Int {
-        return findPacketMarker(file, 4)
+        return file.let{ findPacketMarker(it, 4) }
     }
 
     override fun part2(file: File): Int {
-        return findPacketMarker(file, 14)
+        return file.let{ findPacketMarker(it, 14) }
     }
 
     fun findPacketMarker(file: File, numOfUniqueChars: Int): Int {
-        return numOfUniqueChars +
-            file.readText()
+        return numOfUniqueChars + file.readText()
             .windowed(numOfUniqueChars)
             .map{it.toList().distinct().size}
             .indexOfFirst(numOfUniqueChars::equals)
