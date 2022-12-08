@@ -1,5 +1,5 @@
 fun <T> List<T>.peekPrint(): List<T> {
-    return this.map{ it -> println(it); it; }
+    return this.map{ it.also(::println) }
 }
 
 fun String.findNumbers(): List<Int> {

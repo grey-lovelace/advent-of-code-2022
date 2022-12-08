@@ -24,12 +24,12 @@ class Day07: Day {
     fun createSizeMap(file: File): Map<List<String>,Int> {
         return file
             .readLines()
-            .fold(Tracker(), { (currentDirStack, sizeMap), it ->
+            .fold(Tracker(), { (currentDirStack, sizeMap), line ->
                 when {
-                    it.equals("$ cd ..") -> currentDirStack.removeLast()
-                    it.startsWith("$ cd") ->  currentDirStack.add(it.split(" ").last())
-                    Regex("\\d+ .*") matches it -> {
-                        val fileSize = it.split(" ")[0].toInt()
+                    line.equals("$ cd ..") -> currentDirStack.removeLast()
+                    line.startsWith("$ cd") ->  currentDirStack.add(line.split(" ").last())
+                    Regex("\\d+ .*") matches line -> {
+                        val fileSize = line.split(" ")[0].toInt()
                         currentDirStack.indices.forEach{ i ->
                             val dir = currentDirStack.slice(0..i)
                             sizeMap.put(dir, sizeMap.getOrDefault(dir, 0) + fileSize);

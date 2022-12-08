@@ -15,7 +15,7 @@ class Day03: Day {
 
     override fun part2(file: File): Int {
         return file.readLines()
-            .windowed(3,3)
+            .chunked(3)
             .map{ it[0].find{ l -> l in it[1] && l in it[2] } }
             .map( letters::indexOf )
             .sum()
