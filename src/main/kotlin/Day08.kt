@@ -5,75 +5,35 @@ class Day08: Day {
     override val expectedPart1Results = listOf(21)
     override val expectedPart2Results = listOf(8)
 
-    var findCache = mutableMapOf<Pair<Int,Int>, Int>();
-
     override fun part1(file: File): Int {
-        findCache.clear()
-        val matrix = file.readLines()
-            .map{ line -> line.map{ it.toString().toInt() } }
-
-        val allPoints = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Pair(x,y) }}
-        return allPoints.filter{ isVisible(it, matrix) }
-            .count()
+        return Matrix(file).let{m -> m.points.filter(m::isVisible) }.count()
     }
 
     override fun part2(file: File): Int {
-        findCache.clear()
-        val matrix = file.readLines()
-            .map{ line -> line.map{ it.toString().toInt() } }
-
-        val allPoints = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Pair(x,y) }}
-        return allPoints.map{ scenicScore(it, matrix) }.maxOrNull()!!
+        return Matrix(file).let{m -> m.points.map(m::scenicScore) }.maxOrNull()!!
     }
 
-    fun List<List<Int>>.find(point: Pair<Int,Int>): Int = findCache.getOrPut(point) { (this.getOrNull(point.first) ?: listOf()).getOrNull(point.second) ?: -1 }
+    data class Point(val x: Int, val y: Int, val value: Int)
 
-    fun isVisible(point: Pair<Int,Int>, input: List<List<Int>>): Boolean {
-        val current = input.find(point)
-        val leftx = point.first == 0 || (0..point.first-1).map{ x -> input.find(Pair(x, point.second)) }.none{ current <= it }
-        val rightx = point.first == input.lastIndex || (point.first+1..input.lastIndex).map{ x -> Pair(x, point.second) }.map{ input.find(it) }.none{ current <= it }
-        val lefty = point.second == 0 || (0..point.second-1).none{ y -> current <= input.find(Pair(point.first, y)) }
-        val righty = point.second == input[0].lastIndex || (point.second+1..input[0].lastIndex).none{ y -> current <= input.find(Pair(point.first, y)) }
-        val result = leftx ||
-            rightx ||
-            lefty ||
-            righty
-        return result
-    }
+    data class Matrix(val file: File) {
+        var cache = mutableMapOf<String, Point?>();
+        val matrix = file.readLines().map{ line -> line.map{ it.toString().toInt() } }
+        val points = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Point(x, y, matrix[x][y]).also{ cache.put("$x~$y",it) } }}
+        fun findPointOrNull(x: Int, y: Int): Point? = cache.getOrPut("$x~$y") { points.firstOrNull{ it.x == x && it.y == y } }
+        fun leftOf(point: Point): List<Point> = (point.x-1 downTo 0).mapNotNull{ findPointOrNull(it, point.y) }
+        fun rightOf(point: Point): List<Point> = (point.x+1..matrix.lastIndex).mapNotNull{ findPointOrNull(it, point.y) }
+        fun above(point: Point): List<Point> = (point.y-1 downTo 0).mapNotNull{ findPointOrNull(point.x, it) }
+        fun below(point: Point): List<Point> = (point.y+1..matrix[0].lastIndex).mapNotNull{ findPointOrNull(point.x, it) }
 
-    fun scenicScore(point: Pair<Int,Int>, input: List<List<Int>>): Int {
-        val current = input.find(point)
-        var x = point.first - 1
-        var leftX = 0
-        asdf@ while(input.find(Pair(x, point.second)) != -1) {
-            leftX++
-            if (current <= input.find(Pair(x, point.second))) break@asdf
-            x--
-        }
-        x = point.first + 1
-        var rightX = 0
-        asdf@ while(input.find(Pair(x, point.second)) != -1) {
-            rightX++
-            if (current <= input.find(Pair(x, point.second))) break@asdf
-            x++
+        fun isVisible(point: Point): Boolean {
+            return listOf(leftOf(point), rightOf(point), above(point), below(point))
+                .any{ adj -> adj.none{ point.value <= it.value }}
         }
 
-        var y = point.second - 1
-        var leftY = 0
-        asdf@ while(input.find(Pair(point.first, y)) != -1) {
-            leftY++
-            if (current <= input.find(Pair(point.first, y))) break@asdf
-            y--
+        fun scenicScore(point: Point): Int {
+            return listOf(leftOf(point), rightOf(point), above(point), below(point)).fold(1) { acc, adj ->
+                acc * adj.takeWhile{ point.value > it.value }.count().let{ count -> (if (adj.isNotEmpty() && count < adj.size) 1 else 0) + count }
+            }
         }
-        y = point.second + 1
-        var rightY = 0
-        asdf@ while(input.find(Pair(point.first, y)) != -1) {
-            rightY++
-            if (current <= input.find(Pair(point.first, y))) break@asdf
-            y++
-        }
-
-        val result = leftX * rightX * leftY * rightY
-        return result
     }
 }
