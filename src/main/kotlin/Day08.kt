@@ -14,23 +14,18 @@ class Day08: Day {
     }
 
     data class Matrix(val file: File) {
-        var cache = mutableMapOf<String, Point?>();
         val matrix = file.readLines().map{ line -> line.map{ it.toString().toInt() } }
-        val points = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Point(x, y, matrix[x][y], this).also{ cache.put("$x~$y",it) } }}
-        fun findPointOrNull(x: Int, y: Int): Point? = cache.getOrPut("$x~$y") { points.firstOrNull{ it.x == x && it.y == y } }
+        val points = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Point(x, y, matrix[x][y], this) }}
+        val pointMap = points.associateBy{ Pair(it.x,it.y) }
     }
 
     data class Point(val x: Int, val y: Int, val value: Int, val matrix: Matrix) {
-        val left = (this.x-1 downTo 0)
-        val right = (this.x+1..matrix.matrix.lastIndex)
-        val above = (this.y-1 downTo 0)
-        val below = (this.y+1..matrix.matrix[0].lastIndex)
+        val left = (this.x-1 downTo 0).map{ Pair(it, this.y) }
+        val right = (this.x+1..matrix.matrix.lastIndex).map{ Pair(it, this.y) }
+        val above = (this.y-1 downTo 0).map{ Pair(this.x, it) }
+        val below = (this.y+1..matrix.matrix[0].lastIndex).map{ Pair(this.x, it) }
 
-        fun allAdjPoints() = listOf(
-            left.mapNotNull{ matrix.findPointOrNull(it, this.y) },
-            right.mapNotNull{ matrix.findPointOrNull(it, this.y) },
-            above.mapNotNull{ matrix.findPointOrNull(this.x, it) },
-            below.mapNotNull{ matrix.findPointOrNull(this.x, it) })
+        fun allAdjPoints() = listOf(left, right, above, below).map{ it.mapNotNull(matrix.pointMap::get) }
 
         fun isVisible(): Boolean = allAdjPoints().any{ adj -> adj.all{ this.value > it.value }}
 
