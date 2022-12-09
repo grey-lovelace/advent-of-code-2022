@@ -15,22 +15,20 @@ class Day08: Day {
 
     data class Matrix(val file: File) {
         val matrix = file.readLines().map{ line -> line.map{ it.toString().toInt() } }
-        val points = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Point(x, y, matrix[x][y], this) }}
-        val pointMap = points.associateBy{ Pair(it.x,it.y) }
+        val points = matrix.indices.flatMap{ x -> matrix[x].indices.map{ y -> Point(x, y, matrix[x][y], this.matrix) }}
     }
 
-    data class Point(val x: Int, val y: Int, val value: Int, val matrix: Matrix) {
-        val left = (this.x-1 downTo 0).map{ Pair(it, this.y) }
-        val right = (this.x+1..matrix.matrix.lastIndex).map{ Pair(it, this.y) }
-        val above = (this.y-1 downTo 0).map{ Pair(this.x, it) }
-        val below = (this.y+1..matrix.matrix[0].lastIndex).map{ Pair(this.x, it) }
+    data class Point(val x: Int, val y: Int, val value: Int, val matrix: List<List<Int>>) {
+        val left = (this.x-1 downTo 0).map{ matrix[it][this.y] }
+        val right = (this.x+1..matrix.lastIndex).map{ matrix[it][this.y] }
+        val above = (this.y-1 downTo 0).map{ matrix[this.x][it] }
+        val below = (this.y+1..matrix[0].lastIndex).map{ matrix[this.x][it] }
+        val allAdjPoints = listOf(left, right, above, below)
 
-        fun allAdjPoints() = listOf(left, right, above, below).map{ it.mapNotNull(matrix.pointMap::get) }
+        fun isVisible(): Boolean = allAdjPoints.any{ adj -> adj.all{ this.value > it }}
 
-        fun isVisible(): Boolean = allAdjPoints().any{ adj -> adj.all{ this.value > it.value }}
-
-        fun scenicScore(): Int = allAdjPoints().fold(1) { acc, adj ->
-            acc * adj.takeWhile{ this.value > it.value }.count()
+        fun scenicScore(): Int = allAdjPoints.fold(1) { acc, adj ->
+            acc * adj.takeWhile{ this.value > it }.count()
                 .let{ count -> (if (adj.isNotEmpty() && count < adj.size) 1 else 0) + count }
         }
     }
