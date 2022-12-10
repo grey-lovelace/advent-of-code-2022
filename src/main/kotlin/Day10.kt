@@ -8,10 +8,9 @@ class Day10: Day {
     override fun part1(file: File): Int {
         var x = 1
         var cycle = 1
-        val importantCycles = (20..220 step 40)
-        var nums = 0
+        var result = 0
         fun progress() {
-            if (importantCycles.contains(cycle)) nums += (x * cycle)
+            if ((20..220 step 40).contains(cycle)) result += (x * cycle)
             cycle++
         }
         file.readLines().map{ it.split(" ") }.forEach{ line ->
@@ -21,16 +20,15 @@ class Day10: Day {
                 x += line[1].toInt()
             }
         }
-        return nums;
+        return result;
     }
 
     override fun part2(file: File): String {
         var x = 1
         var cycle = 0
-        val importantCycles = (0..240 step 40)
         var pixels = (0..239).map{' '}.toMutableList()
         fun progress() {
-            if (importantCycles.flatMap{(it+x-1..it+x+1)}.contains(cycle)) pixels[cycle] = '#'
+            if ((x-1..x+1).contains(cycle % 40)) pixels[cycle] = '#'
             cycle++
         }
         file.readLines().map{ it.split(" ") }.forEach{ line ->
