@@ -6,6 +6,14 @@ fun String.findNumbers(): List<Int> {
     return Regex("\\d+").findAll(this).map{ f -> f.value.toInt() }.toList()
 }
 
+fun List<Int>.product(): Int {
+    return this.fold(1){acc: Int, num: Int -> acc * num}
+}
+
+fun List<Long>.product(): Long {
+    return this.fold(1L){acc: Long, num: Long -> acc * num}
+}
+
 fun <T> List<List<T>>.transposed(): List<List<T>> {
     return this.fold(mutableListOf<MutableList<T>>(), { acc, it ->
         it.forEachIndexed{ i, l -> 
