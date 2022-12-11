@@ -20,9 +20,9 @@ class Day11: Day {
     }
 
     fun makeMonkeys(file:File): List<Monkey> = 
-        Regex("Monkey \\d+:\\s+Starting items: ([\\d ,]+)\\s+Operation: new = old (.) ([\\w\\d]+)\\s+" +
-            "Test: divisible by (\\d+)\\s+If true: throw to monkey (\\d+)\\s+If false: throw to monkey (\\d+)")
-            .findAll(file.readText()).map{ Monkey(it.destructured.toList()) }.toList()
+        "\\d+:\\s+[a-z: ]+([\\d, ]+)\\s+[a-z:= ]+([+*]) ([\\w\\d]+)\\s+[a-z: ]+(\\d+)\\s+[a-z: ]+(\\d+)\\s+[a-z: ]+(\\d+)"
+            .toRegex(RegexOption.IGNORE_CASE).findAll(file.readText())
+            .map{ Monkey(it.destructured.toList()) }.toList()
 
     fun run(monkeys: List<Monkey>, rounds: Int, worryFunc: (worry: Long) -> Long): Long {
         (0 until rounds).forEach{ _ ->
