@@ -6,6 +6,7 @@ class Day11: Day {
     override val expectedPart2Results = listOf(2713310158L)
 
     override fun part1(file: File): Long {
+        
         val monkeys = makeMonkeys(file)
         fun worryFunc(worry: Long) = worry / 3
         return run(monkeys, 20, ::worryFunc)
@@ -18,14 +19,10 @@ class Day11: Day {
         return run(monkeys, 10000, ::worryFunc)
     }
 
-    fun makeMonkeys(file:File): List<Monkey> = file.readText().split(Regex("Monkey \\d+\\:"))
-        .drop(1)
-        .map{
-            Regex("Starting items: ([\\d ,]+)\\s+Operation: new = ([\\w\\d]+) (.) ([\\w\\d]+)\\s+" +
-                "Test: divisible by (\\d+)\\s+If true: throw to monkey (\\d+)\\s+If false: throw to monkey (\\d+)")
-            .find(it)!!.destructured.toList()
-        }
-        .map{ instr -> Monkey(instr) }
+    fun makeMonkeys(file:File): List<Monkey> = 
+        Regex("Monkey \\d+:\\s+Starting items: ([\\d ,]+)\\s+Operation: new = old (.) ([\\w\\d]+)\\s+" +
+            "Test: divisible by (\\d+)\\s+If true: throw to monkey (\\d+)\\s+If false: throw to monkey (\\d+)")
+            .findAll(file.readText()).map{ Monkey(it.destructured.toList()) }.toList()
 
     fun run(monkeys: List<Monkey>, rounds: Int, worryFunc: (worry: Long) -> Long): Long {
         (0 until rounds).forEach{ _ ->
@@ -56,12 +53,11 @@ class Day11: Day {
 
     data class Monkey(val data: List<String>) {
         val items = data[0].split(",").map(String::trim).map{ Item(it.toLong()) }.toMutableList()
-        val math1 = data[1]
-        val mathOp = data[2]
-        val math2 = data[3]
-        val divisBy = data[4].toLong()
-        val trueTarget = data[5].toInt()
-        val falseTarget = data[6].toInt()
+        val mathOp = data[1]
+        val math2 = data[2]
+        val divisBy = data[3].toLong()
+        val trueTarget = data[4].toInt()
+        val falseTarget = data[5].toInt()
         var inspectionCount = 0L
     }
 }
