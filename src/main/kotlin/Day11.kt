@@ -6,21 +6,18 @@ class Day11: Day {
     override val expectedPart2Results = listOf(2713310158L)
 
     override fun part1(file: File): Long {
-        
         val monkeys = makeMonkeys(file)
-        fun worryFunc(worry: Long) = worry / 3
-        return run(monkeys, 20, ::worryFunc)
+        return run(monkeys, 20, {worry -> worry / 3})
     }
 
     override fun part2(file: File): Long {
         val monkeys = makeMonkeys(file)
         val commonFactor = monkeys.map(Monkey::divisBy).product()
-        fun worryFunc(worry: Long) = worry % commonFactor
-        return run(monkeys, 10000, ::worryFunc)
+        return run(monkeys, 10000, {worry -> worry % commonFactor})
     }
 
     fun makeMonkeys(file:File): List<Monkey> = 
-        "\\d+:\\s+[a-z: ]+([\\d, ]+)\\s+[a-z:= ]+([+*]) ([\\w\\d]+)\\s+[a-z: ]+(\\d+)\\s+[a-z: ]+(\\d+)\\s+[a-z: ]+(\\d+)"
+        """[a-z: ]+([\d, ]+)[a-z:=\s]+([+*]) (\w+)[a-z:\s]+(\d+)[a-z:\s]+(\d+)[a-z:\s]+(\d+)"""
             .toRegex(RegexOption.IGNORE_CASE).findAll(file.readText())
             .map{ Monkey(it.destructured.toList()) }.toList()
 
