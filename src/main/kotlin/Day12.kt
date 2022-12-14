@@ -16,8 +16,12 @@ class Day12: Day {
     fun run(file: File, startingVal: Int, endingVal: Int): Long {
         val az = listOf('S') + ('a'..'z') + listOf('E')
         val data = file.readLines().map{ line -> line.map{ az.indexOf(it) } }
-        return Maze(data).findShortestPath(startingVal, endingVal, adjPointFilter = {point, adjCandidate ->
-            point.value -1 <= adjCandidate.value 
-        })
+        return Maze(data, { maxOf(1, minOf(it,26)) }).findShortestPath(
+            isStartingPoint = { it.originalValue == startingVal },
+            isEndingPoint = { it.originalValue == endingVal },
+            adjPointFilter = {point, adjCandidate ->
+                point.value -1 <= adjCandidate.value 
+            }
+        )
     }
 }
