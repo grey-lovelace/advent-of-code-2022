@@ -34,7 +34,7 @@ class Day05: Day {
         return stacks.lines()
             .reversed()
             .drop(1)
-            .map{it.toList()} // Needed to make it find the transpose function
+            .map{ it.toList() } // Needed to make it find the transpose function
             .transposed()
             .map{ it.filter{ l -> l.isLetter()}.toMutableList() }
             .filter{ it.isNotEmpty() }
